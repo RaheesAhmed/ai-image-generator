@@ -61,15 +61,16 @@
       }
     </style>
   </head>
-  <body class="bg-dark">
+  <body class="bg-dark form-container">
     <div class="container-fluid p-0">
       <!-- Main heading -->
-      <div class="content-heading">
+      <div class="content-heading" >
         <h1>Meet Your Future Self</h1>
       </div>
 
+      
       <!-- Video Background -->
-      <div class="video-background">
+      <div class="video-background form-container" style="background-color: #000000; border-radius: 5px">
         <!-- Video Foreground -->
         <div class="video-foreground">
           <iframe
@@ -205,22 +206,23 @@
                   position: relative;
                 "
               >
-                Create Your Image
+              Generate Image
                 <div
                   id="spinner"
-                  class="spinner-border text-light"
-                  role="status"
+                  class="spinner-border  text-white" role="status""
                   style="
                     width: 1.5rem;
                     height: 1.5rem;
                     position: absolute;
-                    top: 50%;
-                    right: 20px;
-                    transform: translateY(-50%);
+                    
+                    right: 270px;
+    top: 13px ;
+                    
                     display: none;
                   "
+                  
                 >
-                  <span class="sr-only">Loading...</span>
+                <span class="sr-only">Loading...</span>
                 </div>
               </button>
             </div>
@@ -228,56 +230,123 @@
         </div>
       </div>
 
-      <div class="generated-Images">
-        <!-- Image Display Section -->
-        <div class="image-display" style="text-align: center; margin-top: 20px">
-          <!-- Image Placeholder -->
-          <img
-            id="generatedImage"
-            src=""
-            alt="Generated Image"
-            style="max-width: 100%; display: none"
-          />
+      <div class="form-section d-flex justify-content-center ">
+        <div class="form-container p-4 generate-images-container" style="display: none">
+          <div
+            class="bg-dark text-white p-4"
+            style="background-color: #000000; border-radius: 5px"
+            
+          >
+          <div class="bg-dark text-white p-4 enerated-Images"
+          style="background-color: #000000; border-radius: 5px; "
+    >
+      <!-- Image Display Section -->
+      <div
+        class="image-display"
+        
+      >
+      <!-- Skeleton Loader Section -->
+<div class="skeleton-loader" style="display: none; text-align: center;">
+  <div class="loader-placeholder" style="width: 70%; height: 300px; background-color: #ddd; margin: auto;"></div>
+  <p>Loading...</p>
+</div>
+
+        <!-- Image Placeholder -->
+        <img
+          id="generatedImage"
+          src=""
+          alt="Generated Image"
+          style="max-width: 100%; display: none"
+        />
+      </div>
+      <div class="text-center mt-4" style="text-align: center; margin: 20px; padding: 30px; text-align: center; align-items: center;">
+        <button
+          type="submit"
+          class="btn btn-block"
+          style="
+            background: black;
+            color: white;
+            padding: 10px;
+            font-size: 20px;
+            position: relative;
+          "
+          onclick="handleDownload()"
+        >
+          Download Image
+        
+           
+          </div>
+        </button>
+      </div>
+        </div>
         </div>
       </div>
+      
+      
+      </div>
     </div>
+    <footer class="text-center p-4  text-white">
+      <p>@ 2023 Future Self Institute</p>
+    </footer>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const form = document.querySelector("form");
-        const spinner = document.getElementById("spinner");
-        const generatedImage = document.getElementById("generatedImage");
+  const form = document.querySelector("form");
+  const spinner = document.getElementById("spinner");
+  const generatedImage = document.getElementById("generatedImage");
+  const generatedImages = document.querySelector(".generate-images-container");
+  const skeletonLoader = document.querySelector(".skeleton-loader");
 
-        form.addEventListener("submit", function (event) {
-          event.preventDefault();
-          const formData = new FormData(form);
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const formData = new FormData(form);
 
-          // Show spinner
-          spinner.style.display = "inline-block";
+    // Show spinner and skeleton loader
+    spinner.style.display = "inline-block";
+    skeletonLoader.style.display = "block";
+    generatedImage.style.display = "none"; // Hide the existing image if any
 
-          fetch("http://localhost:3000/generate-images", {
-            method: "POST",
-            body: formData,
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log("Success:", data);
-              // Check if imageData is present and has at least one element
-              if (data.imageData && data.imageData.length > 0) {
-                // Display the image
-                generatedImage.src = data.imageData[0];
-                generatedImage.style.display = "block";
-              } else {
-                console.error("No image data found");
-              }
-              // Hide spinner
-              spinner.style.display = "none";
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              spinner.style.display = "none";
-            });
-        });
+    fetch("http://localhost:3000/generate-images", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+        if (data.imageData && data.imageData.length > 0) {
+          generatedImage.src = data.imageData[0];
+          generatedImage.onload = () => { // Ensure image is loaded before display
+            generatedImage.style.display = "block";
+            generatedImages.style.display = "block";
+            skeletonLoader.style.display = "none"; // Hide skeleton loader
+          }
+        } else {
+          console.error("No image data found");
+        }
+        spinner.style.display = "none";
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        spinner.style.display = "none";
+        skeletonLoader.style.display = "none"; // Hide skeleton loader on error
       });
+  });
+});
+
+      const handleDownload = () => {
+  const generatedImage = document.getElementById("generatedImage");
+  if (generatedImage.src) {
+    const link = document.createElement('a');
+    link.href = generatedImage.src;
+    link.download = 'downloadedImage.png'; // or any other filename you wish
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } else {
+    alert('No image available for download.');
+  }
+};
+
+    
     </script>
 
     <!-- Bootstrap JS and Popper.js -->

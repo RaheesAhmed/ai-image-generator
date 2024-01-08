@@ -11,12 +11,19 @@ dotenv.config();
 const openai = new OpenAI({ apiKey });
 const app = express();
 const port = 3000;
-const upload = multer(); // Initialize multer for multipart/form-data
+const upload = multer();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, "public")));
+
+const generateCsv = (data) => {
+  const csvData = data.map((row) => {
+    return row.join(",");
+  });
+  return csvData.join("\n");
+};
 
 app.post("/generate-images", upload.none(), async (req, res) => {
   try {
@@ -35,7 +42,7 @@ app.post("/generate-images", upload.none(), async (req, res) => {
       model: "dall-e-3",
       prompt: prompt,
       n: 1, // Number of images to generate
-      size: "1792x1024", // Size of the image (can be adjusted as needed)
+      size: "1024x1024", // Size of the image (can be adjusted as needed)
     });
 
     console.log("Generated image data:", imageResponse.data);
