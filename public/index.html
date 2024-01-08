@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>myfuturepreneur</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+
+      .content-heading {
+        text-align: center;
+        color: white;
+        margin: 2rem;
+      }
+
+      .content-heading h1 {
+        font-size: 2.5rem;
+      }
+
+      .video-background {
+        width: 100%;
+        padding-top: 56.25%; /* Maintain aspect ratio for the video */
+        position: relative;
+      }
+
+      .video-foreground iframe {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 70%;
+        height: 100%;
+        border: none;
+      }
+
+      @media (max-width: 768px) {
+        .content-heading h1 {
+          font-size: 1.5rem; /* Smaller font for smaller screens */
+        }
+      }
+
+      .form-section {
+        padding: 2rem;
+        color: white;
+      }
+
+      .form-container {
+        background-color: #000000;
+        border-radius: 5px;
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body class="bg-dark">
+    <div class="container-fluid p-0">
+      <!-- Main heading -->
+      <div class="content-heading">
+        <h1>Meet Your Future Self</h1>
+      </div>
+
+      <!-- Video Background -->
+      <div class="video-background">
+        <!-- Video Foreground -->
+        <div class="video-foreground">
+          <iframe
+            src="https://player.vimeo.com/video/795962181?app_id=122963&autoplay=1&controls=1"
+            frameborder="0"
+            allow="autoplay; fullscreen"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+
+      <!-- Form Section -->
+      <div class="form-section d-flex justify-content-center">
+        <div class="form-container p-4">
+          <form
+            class="bg-dark text-white p-4"
+            style="background-color: #000000; border-radius: 5px"
+            action="http://localhost:3000/generate-images"
+            method="POST"
+          >
+            <h2 class="text-center mb-4">DESCRIBE THE SCENE</h2>
+
+            <div class="form-group">
+              <label for="mainScene" class="text-white"
+                >1. Briefly describe the main scene, the pivotal moment of your
+                journey *</label
+              >
+              <textarea
+                class="form-control"
+                id="mainScene"
+                name="mainScene"
+                rows="3"
+                required
+                placeholder="provide a short description of the scene, 3-4 sentences max."
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="location" class="text-white"
+                >2. Describe the location *</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="location"
+                name="location"
+                required
+                placeholder="eg in nature, at a conference, a festival, etc"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="mainCharacter" class="text-white"
+                >3. Describe the main character of this scene. *</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="mainCharacter"
+                name="mainCharacter"
+                required
+                placeholder="eg male in his mid 30's, European descent, physically fit and happy, with a mustache wearing a white linen shirt."
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="additionalCharacters" class="text-white"
+                >4. Are there additional characters present in the scene?</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="additionalCharacters"
+                name="additionalCharacters"
+                placeholder="If so, who might they be?"
+              />
+            </div>
+
+            <div class="form-group form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="imageCopy"
+                name="imageCopy"
+              />
+              <label class="form-check-label text-white" for="imageCopy"
+                >5. Would you like to receive a copy of your image, accompanied
+                by instructions on how to use it as a tool for
+                manifestation?</label
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="additionalInfo" class="text-white"
+                >Is there anything else you would like to share?</label
+              >
+              <textarea
+                class="form-control"
+                id="additionalInfo"
+                name="additionalInfo"
+                rows="2"
+              ></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="col">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="First Name"
+                  name="firstName"
+                />
+              </div>
+              <div class="col">
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="Email"
+                  name="email"
+                />
+              </div>
+            </div>
+
+            <div class="text-center mt-4">
+              <button
+                type="submit"
+                class="btn btn-block"
+                style="
+                  background: black;
+                  color: white;
+                  padding: 10px;
+                  font-size: 20px;
+                  position: relative;
+                "
+              >
+                Create Your Image
+                <div
+                  id="spinner"
+                  class="spinner-border text-light"
+                  role="status"
+                  style="
+                    width: 1.5rem;
+                    height: 1.5rem;
+                    position: absolute;
+                    top: 50%;
+                    right: 20px;
+                    transform: translateY(-50%);
+                    display: none;
+                  "
+                >
+                  <span class="sr-only">Loading...</span>
+                </div>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="generated-Images">
+        <!-- Image Display Section -->
+        <div class="image-display" style="text-align: center; margin-top: 20px">
+          <!-- Image Placeholder -->
+          <img
+            id="generatedImage"
+            src=""
+            alt="Generated Image"
+            style="max-width: 100%; display: none"
+          />
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        const spinner = document.getElementById("spinner");
+        const generatedImage = document.getElementById("generatedImage");
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const formData = new FormData(form);
+
+          // Show spinner
+          spinner.style.display = "inline-block";
+
+          fetch("http://localhost:3000/generate-images", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Success:", data);
+              // Check if imageData is present and has at least one element
+              if (data.imageData && data.imageData.length > 0) {
+                // Display the image
+                generatedImage.src = data.imageData[0];
+                generatedImage.style.display = "block";
+              } else {
+                console.error("No image data found");
+              }
+              // Hide spinner
+              spinner.style.display = "none";
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              spinner.style.display = "none";
+            });
+        });
+      });
+    </script>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
+</html>
