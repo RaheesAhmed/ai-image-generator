@@ -1,4 +1,6 @@
-# Project Name
+# AI Image Generator
+
+![Main Screenshot](screenshots/main.PNG)
 
 ## Description
 
