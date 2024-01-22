@@ -59,6 +59,33 @@
         border-radius: 5px;
         margin: auto;
       }
+      .skeleton-loader {
+          display: none;
+          width: 100%;
+          height: 300px;
+          background-color: #ddd;
+          border-radius: 5px;
+          overflow: hidden;
+          position: relative;
+      }
+
+      .skeleton-loader::before {
+          content: '';
+          display: block;
+          position: absolute;
+          left: -150%;
+          top: 0;
+          height: 100%;
+          width: 150%;
+          background: linear-gradient(to right, transparent 0%, #e0e0e0 50%, transparent 100%);
+          animation: load 1.5s infinite;
+      }
+
+      @keyframes load {
+          100% {
+              left: 100%;
+          }
+      }
     </style>
   </head>
   <body class="bg-dark form-container">
@@ -88,7 +115,7 @@
           <form
             class="bg-dark text-white p-4"
             style="background-color: #000000; border-radius: 5px"
-            action="http://localhost:3000/generate-images"
+            action="https://f7a46599-55b7-45f9-9694-e32ee4a6d036-00-1lvstggc5znq9.worf.replit.dev/generate-images"
             method="POST"
           >
             <h2 class="text-center mb-4">DESCRIBE THE SCENE</h2>
@@ -156,7 +183,7 @@
                 id="imageCopy"
                 name="imageCopy"
               />
-              <label class="form-check-label text-white" for="imageCopy"
+              <label class="form-check-label text-white" for="imageCopy" id= "imageCopy"
                 >5. Would you like to receive a copy of your image, accompanied
                 by instructions on how to use it as a tool for
                 manifestation?</label
@@ -229,7 +256,7 @@
           </form>
         </div>
       </div>
-
+      <div class="skeleton-loader"></div>
       <div class="form-section d-flex justify-content-center ">
         <div class="form-container p-4 generate-images-container" style="display: none">
           <div
@@ -290,61 +317,61 @@
     </footer>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-  const form = document.querySelector("form");
-  const spinner = document.getElementById("spinner");
-  const generatedImage = document.getElementById("generatedImage");
-  const generatedImages = document.querySelector(".generate-images-container");
-  const skeletonLoader = document.querySelector(".skeleton-loader");
+      const form = document.querySelector("form");
+      const spinner = document.getElementById("spinner");
+      const generatedImage = document.getElementById("generatedImage");
+      const generatedImages = document.querySelector(".generate-images-container");
+      const skeletonLoader = document.querySelector(".skeleton-loader");
 
-  form.addEventListener("submit", function (event) {
-    event.preventDefault();
-    const formData = new FormData(form);
+      form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const formData = new FormData(form);
 
-    // Show spinner and skeleton loader
-    spinner.style.display = "inline-block";
-    skeletonLoader.style.display = "block";
-    generatedImage.style.display = "none"; // Hide the existing image if any
+          // Show spinner and enhanced skeleton loader
+          spinner.style.display = "inline-block";
+          skeletonLoader.style.display = "block";
+          generatedImage.style.display = "none"; // Hide the existing image if any
 
-    fetch("http://localhost:3000/generate-images", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
-        if (data.imageData && data.imageData.length > 0) {
-          generatedImage.src = data.imageData[0];
-          generatedImage.onload = () => { // Ensure image is loaded before display
-            generatedImage.style.display = "block";
-            generatedImages.style.display = "block";
-            skeletonLoader.style.display = "none"; // Hide skeleton loader
-          }
-        } else {
-          console.error("No image data found");
-        }
-        spinner.style.display = "none";
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        spinner.style.display = "none";
-        skeletonLoader.style.display = "none"; // Hide skeleton loader on error
+          fetch("http://localhost:3000/generate-images", {
+              method: "POST",
+              body: formData,
+          })
+              .then((response) => response.json())
+              .then((data) => {
+                  console.log("Success:", data);
+                  if (data.imageData && data.imageData.length > 0) {
+                      generatedImage.src = data.imageData[0];
+                      generatedImage.onload = () => { // Ensure image is loaded before display
+                          generatedImage.style.display = "block";
+                          generatedImages.style.display = "block"; // Change display style to block
+                          skeletonLoader.style.display = "none"; // Hide skeleton loader
+                      }
+                  } else {
+                      console.error("No image data found");
+                      skeletonLoader.style.display = "none"; // Hide skeleton loader if no image data
+                  }
+                  spinner.style.display = "none";
+              })
+              .catch((error) => {
+                  console.error("Error:", error);
+                  spinner.style.display = "none";
+                  skeletonLoader.style.display = "none"; // Hide skeleton loader on error
+              });
       });
-  });
-});
-
-      const handleDownload = () => {
-  const generatedImage = document.getElementById("generatedImage");
-  if (generatedImage.src) {
-    const link = document.createElement('a');
-    link.href = generatedImage.src;
-    link.download = 'downloadedImage.png'; // or any other filename you wish
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  } else {
-    alert('No image available for download.');
-  }
-};
+            const handleDownload = () => {
+            const generatedImage = document.getElementById("generatedImage");
+            if (generatedImage.src) {
+            const link = document.createElement('a');
+            link.href = generatedImage.src;
+            link.download = 'downloadedImage.png'; // or any other filename you wish
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            } else {
+            alert('No image available for download.');
+            }
+            };
+            });
 
     
     </script>
