@@ -8,12 +8,17 @@ import fs from "fs";
 import cors from "cors";
 import stream from "stream";
 import path from "path";
+import bodyParser from "body-parser";
+
+const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 dotenv.config();
 
 const apiKey = process.env["OPENAI_API_KEY"];
 const openai = new OpenAI({ apiKey });
-const app = express();
+
 const port = 3000;
 const upload = multer();
 app.use(cors());

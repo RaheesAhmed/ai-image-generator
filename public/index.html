@@ -2,383 +2,489 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>myfuturepreneur</title>
-    <!-- Bootstrap CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Montserrat&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css"
+      integrity="sha384-BY+fdrpOd3gfeRvTSMT+VUZmA728cfF9Z2G42xpaRkUGu2i3DyzpTURDo5A6CaLK"
+      crossorigin="anonymous"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Future Selfie™ - AI Image Generator</title>
+    <!-- Link to Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
-      body,
-      html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
+      .form-control:focus {
+        border-color: #6c757d;
+        box-shadow: none;
       }
 
-      .content-heading {
-        text-align: center;
-        color: white;
-        margin: 2rem;
+      .form-control {
+        border: none !important;
+        border-bottom: 1px solid #ced4da !important;
       }
 
-      .content-heading h1 {
-        font-size: 2.5rem;
+      .custom-form-label {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
       }
-
-      .video-background {
-        width: 100%;
-        padding-top: 56.25%; /* Maintain aspect ratio for the video */
-        position: relative;
-      }
-
-      .video-foreground iframe {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 70%;
-        height: 100%;
+      .btn-custom {
+        background-color: #8e44ad; /* Custom color for the button */
         border: none;
       }
-
+      .btn-custom:hover {
+        background-color: #732d91; /* Darker shade for hover state */
+      }
+      .form-section-title {
+        font-size: 1.5rem;
+        color: #4a4a4a;
+        margin-bottom: 2rem;
+      }
+      .form-row {
+        margin-bottom: 1rem;
+      }
+      header.container-fluid {
+        padding: 0px 160px;
+        background: #f8f9fa;
+      }
+      section.mt-5 {
+        padding: 0px 160px;
+      }
+      section.mt-4 {
+        padding: 50px 160px;
+      }
       @media (max-width: 768px) {
-        .content-heading h1 {
-          font-size: 1.5rem; /* Smaller font for smaller screens */
+        header.container-fluid {
+          padding: 0px 20px;
+        }
+
+        section.mt-5 {
+          padding: 0px 20px;
+        }
+        section.mt-4 {
+          padding: 0px 20px;
+        }
+
+        section.container-fluid {
+          padding: 0px 20px;
+        }
+
+        section.container {
+          padding: 0px 20px;
         }
       }
-
-      .form-section {
-        padding: 2rem;
-        color: white;
+      /* Adjust the heading styles to match the design */
+      h2.mb-4 {
+        font-weight: 400; /* Example, adjust as needed */
+        color: #4a4a4a; /* Example, adjust as needed */
       }
 
-      .form-container {
-        background-color: #000000;
-        border-radius: 5px;
+      /* Style the form background and shadow */
+      form {
+        background-color: #fff;
+        padding: 60px;
+        max-width: 650px;
         margin: auto;
-      }
-      .skeleton-loader {
-          display: none;
-          width: 100%;
-          height: 300px;
-          background-color: #ddd;
-          border-radius: 5px;
-          overflow: hidden;
-          position: relative;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
       }
 
-      .skeleton-loader::before {
-          content: '';
-          display: block;
-          position: absolute;
-          left: -150%;
-          top: 0;
-          height: 100%;
-          width: 150%;
-          background: linear-gradient(to right, transparent 0%, #e0e0e0 50%, transparent 100%);
-          animation: load 1.5s infinite;
+      /* Adjust form input styles */
+      .form-control {
+        border-radius: 0; /* Example, if design has no rounded corners */
+        border: 1px solid #ccc; /* Example, adjust as needed */
       }
 
-      @keyframes load {
-          100% {
-              left: 100%;
-          }
+      /* Style the button according to the design */
+      .btn-custom {
+        background-color: #b3226a; /* Use the exact color from the design */
+        color: white;
+        font-weight: 600;
+      }
+
+      .btn-custom:hover {
+        background-color: #9e1e5a; /* Darker shade for the hover state */
+      }
+
+      /* Style the footer to match the design */
+      footer {
+        background-color: #000;
+        color: #fff;
+        text-align: center;
+        padding: 20px 0;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        header,
+        section {
+          padding: 20px;
+        }
+        /* Other responsive styles as needed */
+      }
+      /* Center the download button */
+      .download-button-wrapper {
+        max-width: 650px;
+        margin: auto;
+        display: flex;
+        justify-content: center;
+        margin-top: 20px; /* Changed from flex-end to center */
+      }
+      label {
+        display: inline-block;
+        margin-bottom: 0.5rem;
+        color: #2c3345ff;
+        /* font-family: Poppins; */
+        font-size: 16px;
+        font-weight: 500;
       }
     </style>
   </head>
-  <body class="bg-dark form-container">
-    <div class="container-fluid p-0">
-      <!-- Main heading -->
-      <div class="content-heading" >
-        <h1>Meet Your Future Self</h1>
-      </div>
-
-      
-      <!-- Video Background -->
-      <div class="video-background form-container" style="background-color: #000000; border-radius: 5px">
-        <!-- Video Foreground -->
-        <div class="video-foreground">
-          <iframe
-            src="https://player.vimeo.com/video/795962181?app_id=122963&autoplay=1&controls=1"
-            frameborder="0"
-            allow="autoplay; fullscreen"
-            allowfullscreen
-          ></iframe>
-        </div>
-      </div>
-
-      <!-- Form Section -->
-      <div class="form-section d-flex justify-content-center">
-        <div class="form-container p-4">
-          <form
-            class="bg-dark text-white p-4"
-            style="background-color: #000000; border-radius: 5px"
-            action="https://f7a46599-55b7-45f9-9694-e32ee4a6d036-00-1lvstggc5znq9.worf.replit.dev/generate-images"
-            method="POST"
-          >
-            <h2 class="text-center mb-4">DESCRIBE THE SCENE</h2>
-
-            <div class="form-group">
-              <label for="mainScene" class="text-white"
-                >1. Briefly describe the main scene, the pivotal moment of your
-                journey *</label
-              >
-              <textarea
-                class="form-control"
-                id="mainScene"
-                name="mainScene"
-                rows="3"
-                required
-                placeholder="provide a short description of the scene, 3-4 sentences max."
-              ></textarea>
-            </div>
-
-            <div class="form-group">
-              <label for="location" class="text-white"
-                >2. Describe the location *</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="location"
-                name="location"
-                required
-                placeholder="eg in nature, at a conference, a festival, etc"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="mainCharacter" class="text-white"
-                >3. Describe the main character of this scene. *</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="mainCharacter"
-                name="mainCharacter"
-                required
-                placeholder="eg male in his mid 30's, European descent, physically fit and happy, with a mustache wearing a white linen shirt."
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="additionalCharacters" class="text-white"
-                >4. Are there additional characters present in the scene?</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="additionalCharacters"
-                name="additionalCharacters"
-                placeholder="If so, who might they be?"
-              />
-            </div>
-
-            <div class="form-group form-check">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                id="imageCopy"
-                name="imageCopy"
-              />
-              <label class="form-check-label text-white" for="imageCopy" id= "imageCopy"
-                >5. Would you like to receive a copy of your image, accompanied
-                by instructions on how to use it as a tool for
-                manifestation?</label
-              >
-            </div>
-
-            <div class="form-group">
-              <label for="additionalInfo" class="text-white"
-                >Is there anything else you would like to share?</label
-              >
-              <textarea
-                class="form-control"
-                id="additionalInfo"
-                name="additionalInfo"
-                rows="2"
-              ></textarea>
-            </div>
-
-            <div class="form-row">
-              <div class="col">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="First Name"
-                  name="firstName"
-                />
-              </div>
-              <div class="col">
-                <input
-                  type="email"
-                  class="form-control"
-                  placeholder="Email"
-                  name="email"
-                />
-              </div>
-            </div>
-
-            <div class="text-center mt-4">
-              <button
-                type="submit"
-                class="btn btn-block"
-                style="
-                  background: black;
-                  color: white;
-                  padding: 10px;
-                  font-size: 20px;
-                  position: relative;
-                "
-              >
-              Generate Image
-                <div
-                  id="spinner"
-                  class="spinner-border  text-white" role="status""
-                  style="
-                    width: 1.5rem;
-                    height: 1.5rem;
-                    position: absolute;
-                    
-                    right: 270px;
-    top: 13px ;
-                    
-                    display: none;
-                  "
-                  
-                >
-                <span class="sr-only">Loading...</span>
-                </div>
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div class="skeleton-loader"></div>
-      <div class="form-section d-flex justify-content-center ">
-        <div class="form-container p-4 generate-images-container" style="display: none">
-          <div
-            class="bg-dark text-white p-4"
-            style="background-color: #000000; border-radius: 5px"
-            
-          >
-          <div class="bg-dark text-white p-4 enerated-Images"
-          style="background-color: #000000; border-radius: 5px; "
-    >
-      <!-- Image Display Section -->
-      <div
-        class="image-display"
-        
+  <body>
+    <header class="container-fluid">
+      <!-- Navigation bar -->
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <!-- Logo and brand name -->
+        <a class="navbar-brand" href="#">
+          <img
+            src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/f4QF3s4w4Ps9TD83xDp9/media/659f6f154a146ba290770422.png"
+            alt="Future Self™ Logo"
+            style="
+              height: 100px;
+              width: 100px;
+              background: transparent;
+              font-size: 20px;
+              font-family: 'Montserrat', sans-serif;
+            "
+          />
+          futureSelfie™
+        </a>
+      </nav>
+      <p
+        style="
+          font-size: 52px !important;
+          font-weight: 300;
+          padding: 80px 0px 40px 0px;
+        "
       >
-      <!-- Skeleton Loader Section -->
-<div class="skeleton-loader" style="display: none; text-align: center;">
-  <div class="loader-placeholder" style="width: 70%; height: 300px; background-color: #ddd; margin: auto;"></div>
-  <p>Loading...</p>
-</div>
-
-        <!-- Image Placeholder -->
-        <img
-          id="generatedImage"
-          src=""
-          alt="Generated Image"
-          style="max-width: 100%; display: none"
-        />
+        ai image generator
+      </p>
+    </header>
+    <!-- Section for Welcome and Video Placeholder -->
+    <section class="mt-5">
+      <h2 class="mb-4">1_ Welcome</h2>
+      <div class="row">
+        <!-- Video placeholder column -->
+        <div class="col-md-6">
+          <!-- Placeholder for the video; replace with actual video element or embed code -->
+          <div class="embed-responsive embed-responsive-16by9">
+            <iframe
+              class="embed-responsive-item"
+              <!--
+              src="https://player.vimeo.com/video/795962181?app_id=122963&autoplay=1&controls=1"
+              --
+            >
+              frameborder="0" allow="autoplay; fullscreen" allowfullscreen
+              ></iframe
+            >
+          </div>
+        </div>
+        <!-- Text description column -->
+        <div class="col-md-6">
+          <h2 class="mb-4"></h2>
+          <p>
+            Future Self™ uses advanced AI to create a vivid, dynamic
+            visualization of your future self to inspire and motivate you,
+            providing a tangible glimpse into the possibilities that await you.
+          </p>
+        </div>
       </div>
-      <div class="text-center mt-4" style="text-align: center; margin: 20px; padding: 30px; text-align: center; align-items: center;">
+    </section>
+    <!-- Section for Describing the Vision -->
+    <section class="mt-4" style="background: #f6f6f6">
+      <div class="conditional">
+        <h2 class="mb-4" style="font-weight: 400">2_describe your vision</h2>
+        <p>
+          describe a peak moment of your guided journey, and the generator will
+          craft a detailed image of what your future could look like.
+        </p>
+      </div>
+      <form
+        style="
+          background-color: #fff;
+          padding: 60px;
+          max-width: 650px;
+          display: flex;
+          align-self: center;
+          flex-direction: column;
+          margin: auto;
+          box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        "
+      >
+        <!-- Each form group for inputs -->
+        <div class="form-group" style="background: white">
+          <label for="sceneDescription" class=""
+            >1. Briefly describe the main scene, the pivotal moment of your
+            journey *</label
+          >
+          <textarea
+            class="form-control"
+            id="mainScene"
+            name="mainScene"
+            rows="2"
+            required
+            placeholder="provide a short description of the scene, 3-4 sentences max."
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="locationDescription" class=""
+            >2. Describe the location *</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="location"
+            name="location"
+            required
+            placeholder="eg in nature, at a conference, a festival, etc"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="characterDescription" class=""
+            >3. Describe the main character of this scene. *</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="mainCharacter"
+            name="mainCharacter"
+            required
+            placeholder="eg male in his mid 30's, European descent, physically fit and happy, with a mustache wearing a white linen shirt."
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="additionalCharacters" class=""
+            >4. Are there additional characters present in the scene?</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="additionalCharacters"
+            name="additionalCharacters"
+            placeholder="If so, who might they be?"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-check-label" for="newsletterSignup"
+            >5. Would you like to receive a copy of your FutureSelf™ along with
+            tips on how to turn your vision into reality?</label
+          >
+          <input type="checkbox" class="w-8 h-8" id="newsletterSignup" /> Yes
+        </div>
+
+        <div class="form-group">
+          <label for="additionalInfo" class=""
+            >6. Is there anything else you would like to share?</label
+          >
+          <textarea
+            class="form-control"
+            id="additionalInfo"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="col">
+            <label for="firstName" class="">First Name</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="First Name"
+              name="firstName"
+            />
+          </div>
+          <div class="col">
+            <label for="emailAddress">Email</label>
+            <input
+              type="email"
+              class="form-control"
+              class=""
+              placeholder="Email"
+              name="email"
+            />
+          </div>
+        </div>
+
+        <!-- Submit Button -->
         <button
           type="submit"
-          class="btn btn-block"
-          style="
-            background: black;
-            color: white;
-            padding: 10px;
-            font-size: 20px;
-            position: relative;
-          "
-          onclick="handleDownload()"
+          class="btn btn-custom mt-4 py-2 bg-[#b3226aFF]"
+          style="background-color: #b3226aff; color: white; font-weight: 600"
+        >
+          Create Your Image
+        </button>
+        <!-- Placeholder for loading skeleton and generated image -->
+        <div id="imagePlaceholder" style="margin-top: 20px; text-align: center">
+          <!-- Loading skeleton (hidden by default) -->
+          <div id="loadingSkeleton" style="display: none">
+            <div style="margin-bottom: 20px">
+              Generating your image, please wait...
+            </div>
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+          <!-- Placeholder for the generated image (hidden by default) -->
+          <img
+            id="generatedImage"
+            src=""
+            alt="Generated Image"
+            style="max-width: 100%; display: none"
+          />
+        </div>
+      </form>
+      <!-- Adjusted div for the Download Image button -->
+      <div class="download-button-wrapper mb-4">
+        <button
+          type="button"
+          class="btn btn-custom bg-[#b3226aFF]"
+          style="background-color: #b3226aff; color: white; font-weight: 600"
         >
           Download Image
-        
-           
-          </div>
         </button>
       </div>
+    </section>
+
+    <section class="mt-5">
+      <h2 class="mb-4">3_from vision to reality</h2>
+      <div class="row">
+        <!-- Video placeholder column -->
+        <div class="col-md-6">
+          <!-- Placeholder for the video; replace with actual video element or embed code -->
+          <div class="embed-responsive embed-responsive-16by9">
+            <iframe
+              class="embed-responsive-item"
+              <!--
+              src="https://player.vimeo.com/video/795962181?app_id=122963&autoplay=1&controls=1"
+              --
+            >
+              frameborder="0" allow="autoplay; fullscreen" allowfullscreen
+              ></iframe
+            >
+          </div>
         </div>
+        <!-- Text description column -->
+        <div class="col-md-6">
+          <h2 class="mb-4"></h2>
+          <p>
+            Watch the video and check your inbox for a copy of your FutureSelie™
+            along with tips on how to turn your vision into reality.
+          </p>
+          <p>
+            <span style="color: #b3226a; font-weight: 800">
+              continue HERE
+            </span>
+            [add link here]
+          </p>
         </div>
       </div>
-      
-      
+    </section>
+
+    <div
+      style="
+        display: flex;
+        justify-content: center;
+        background-color: #000;
+        padding: 20px 0px;
+        margin-top: 10px;
+      "
+    >
+      <div
+        style="
+          display: flex;
+          justify-content: center;
+          flex-direction: column;
+          align-items: center;
+        "
+      >
+        <!-- add rounded insta and linked in round tags -->
+        <div style="display: flex; gap: 3px">
+          <a href="https://www.instagram.com/futureselfinstitute"
+            ><img
+              src="https://stcdn.leadconnectorhq.com/funnel/icons/rounded-dark/instagram-rounded-dark.svg"
+              alt="social media icon"
+              class="social-media-icon"
+          /></a>
+          <a href="https://www.linkedin.com/in/peter-oppermann/">
+            <img
+              src="https://stcdn.leadconnectorhq.com/funnel/icons/rounded-dark/linkedin-rounded-dark.svg"
+              alt="social media icon"
+              class="social-media-icon"
+          /></a>
+        </div>
+
+        <p
+          style="
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            margin-top: 10px;
+
+            text-align: center;
+          "
+        >
+          @ 2023 Future Self Institute
+        </p>
       </div>
     </div>
-    <footer class="text-center p-4  text-white">
-      <p>@ 2023 Future Self Institute</p>
-    </footer>
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-      const form = document.querySelector("form");
-      const spinner = document.getElementById("spinner");
-      const generatedImage = document.getElementById("generatedImage");
-      const generatedImages = document.querySelector(".generate-images-container");
-      const skeletonLoader = document.querySelector(".skeleton-loader");
+      $(document).ready(function () {
+        // When the form is submitted
+        $("form").on("submit", function (e) {
+          e.preventDefault(); // Prevent the default form submission
 
-      form.addEventListener("submit", function (event) {
-          event.preventDefault();
-          const formData = new FormData(form);
+          // Show the loading skeleton
+          $("#loadingSkeleton").show();
 
-          // Show spinner and enhanced skeleton loader
-          spinner.style.display = "inline-block";
-          skeletonLoader.style.display = "block";
-          generatedImage.style.display = "none"; // Hide the existing image if any
+          // AJAX request to backend
+          $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/generate-images", // Your API endpoint
+            data: $(this).serialize(), // Form data
+            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            success: function (response) {
+              // Hide the loading skeleton
+              $("#loadingSkeleton").hide();
 
-          fetch("http://localhost:3000/generate-images", {
-              method: "POST",
-              body: formData,
-          })
-              .then((response) => response.json())
-              .then((data) => {
-                  console.log("Success:", data);
-                  if (data.imageData && data.imageData.length > 0) {
-                      generatedImage.src = data.imageData[0];
-                      generatedImage.onload = () => { // Ensure image is loaded before display
-                          generatedImage.style.display = "block";
-                          generatedImages.style.display = "block"; // Change display style to block
-                          skeletonLoader.style.display = "none"; // Hide skeleton loader
-                      }
-                  } else {
-                      console.error("No image data found");
-                      skeletonLoader.style.display = "none"; // Hide skeleton loader if no image data
-                  }
-                  spinner.style.display = "none";
-              })
-              .catch((error) => {
-                  console.error("Error:", error);
-                  spinner.style.display = "none";
-                  skeletonLoader.style.display = "none"; // Hide skeleton loader on error
-              });
+              // Show the generated image
+              $("#generatedImage").attr("src", response.imageData[0]).show();
+            },
+            error: function (error) {
+              // Hide the loading skeleton
+              $("#loadingSkeleton").hide();
+              alert("An error occurred. Please try again.");
+            },
+          });
+        });
       });
-            const handleDownload = () => {
-            const generatedImage = document.getElementById("generatedImage");
-            if (generatedImage.src) {
-            const link = document.createElement('a');
-            link.href = generatedImage.src;
-            link.download = 'downloadedImage.png'; // or any other filename you wish
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            } else {
-            alert('No image available for download.');
-            }
-            };
-            });
-
-    
     </script>
 
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>

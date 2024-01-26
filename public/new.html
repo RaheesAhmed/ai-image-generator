@@ -21,6 +21,7 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
       .form-control:focus {
         border-color: #6c757d;
@@ -334,6 +335,25 @@
         >
           Create Your Image
         </button>
+        <!-- Placeholder for loading skeleton and generated image -->
+        <div id="imagePlaceholder" style="margin-top: 20px; text-align: center">
+          <!-- Loading skeleton (hidden by default) -->
+          <div id="loadingSkeleton" style="display: none">
+            <div style="margin-bottom: 20px">
+              Generating your image, please wait...
+            </div>
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+          <!-- Placeholder for the generated image (hidden by default) -->
+          <img
+            id="generatedImage"
+            src=""
+            alt="Generated Image"
+            style="max-width: 100%; display: none"
+          />
+        </div>
       </form>
       <!-- Adjusted div for the Download Image button -->
       <div class="download-button-wrapper mb-4">
@@ -429,7 +449,37 @@
         </p>
       </div>
     </div>
-    <script></script>
+    <script>
+      $(document).ready(function () {
+        // When the form is submitted
+        $("form").on("submit", function (e) {
+          e.preventDefault(); // Prevent the default form submission
+
+          // Show the loading skeleton
+          $("#loadingSkeleton").show();
+
+          // AJAX request to backend
+          $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/generate-images", // Your API endpoint
+            data: $(this).serialize(), // Form data
+            success: function (response) {
+              // Hide the loading skeleton
+              $("#loadingSkeleton").hide();
+
+              // Show the generated image
+              $("#generatedImage").attr("src", response.imageData[0]).show();
+            },
+            error: function (error) {
+              // Hide the loading skeleton
+              $("#loadingSkeleton").hide();
+              alert("An error occurred. Please try again.");
+            },
+          });
+        });
+      });
+    </script>
+
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.9.3/dist/umd/popper.min.js"></script>
