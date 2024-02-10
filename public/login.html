@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Google Drive Upload</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to CSS for styling -->
+</head>
+<style>
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.login-container, .upload-container {
+    position: fixed;
+    width: 300px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+input[type="text"], input[type="password"], input[type="file"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+
+</style>
+<body>
+    <div class="login-container">
+        <form id="loginForm">
+            <h2>Login</h2>
+            <input type="text" placeholder="Username" name="username" required>
+            <input type="password" placeholder="Password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <div class="upload-container" style="display:none;">
+        <h2>Upload to Google Drive</h2>
+        <input type="file" id="fileInput">
+        <button onclick="uploadToDrive()">Upload</button>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    // Simulate login - Replace with actual login logic
+    var username = document.getElementsByName('username')[0].value;
+    var password = document.getElementsByName('password')[0].value;
+    if (username === "user" && password === "pass") { // Dummy check
+        document.querySelector('.login-container').style.display = 'none';
+        document.querySelector('.upload-container').style.display = 'block';
+    } else {
+        alert("Invalid credentials");
+    }
+});
+
+//make api call to a new end point to save the csv to the google drive
+
+
+    </script> 
+</body>
+</html>

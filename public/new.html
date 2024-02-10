@@ -180,7 +180,7 @@
     </header>
     <!-- Section for Welcome and Video Placeholder -->
     <section class="mt-5">
-      <h2 class="mb-4">1_ Welcome</h2>
+      <h2 class="mb-4">1_welcome</h2>
       <div class="row">
         <!-- Video placeholder column -->
         <div class="col-md-6">
@@ -189,7 +189,7 @@
             <iframe
               class="embed-responsive-item"
               <!--
-              src="https://player.vimeo.com/video/795962181?app_id=122963&autoplay=1&controls=1"
+              src="https://player.vimeo.com/video/906563295?app_id=122963&autoplay=1&controls=1"
               --
             >
               frameborder="0" allow="autoplay; fullscreen" allowfullscreen
@@ -201,9 +201,9 @@
         <div class="col-md-6">
           <h2 class="mb-4"></h2>
           <p>
-            Future Self™ uses advanced AI to create a vivid, dynamic
-            visualization of your future self to inspire and motivate you,
-            providing a tangible glimpse into the possibilities that await you.
+            After your guided visualization, it's time to crystallize your
+            vision. Use the form below to describe a pivotal moment of your
+            future self in your envisioned future.
           </p>
         </div>
       </div>
@@ -213,8 +213,9 @@
       <div class="conditional">
         <h2 class="mb-4" style="font-weight: 400">2_describe your vision</h2>
         <p>
-          describe a peak moment of your guided journey, and the generator will
-          craft a detailed image of what your future could look like.
+          Describe a peak moment of your guided journey. Our AI generator will
+          then craft a detailed, vivid image of what your future could look
+          like, turning your dreams into a visual reality.
         </p>
       </div>
       <form
@@ -361,6 +362,8 @@
           type="button"
           class="btn btn-custom bg-[#b3226aFF]"
           style="background-color: #b3226aff; color: white; font-weight: 600"
+          onClick="handleDownload()"
+          target="_blank"
         >
           Download Image
         </button>
@@ -376,9 +379,7 @@
           <div class="embed-responsive embed-responsive-16by9">
             <iframe
               class="embed-responsive-item"
-              <!--
-              src="https://player.vimeo.com/video/795962181?app_id=122963&autoplay=1&controls=1"
-              --
+              src="https://player.vimeo.com/video/906563286?app_id=122963&autoplay=1&controls=1"
             >
               frameborder="0" allow="autoplay; fullscreen" allowfullscreen
               ></iframe
@@ -389,8 +390,10 @@
         <div class="col-md-6">
           <h2 class="mb-4"></h2>
           <p>
-            Watch the video and check your inbox for a copy of your FutureSelie™
-            along with tips on how to turn your vision into reality.
+            Let your FutureSelfie™ become a powerful tool in your journey of
+            goal setting and motivation. Consider taking an inspired action
+            today that brings you one step closer to your vision. Remember,
+            small changes accumulate over time.
           </p>
           <p>
             <span style="color: #b3226a; font-weight: 800">
@@ -461,27 +464,49 @@
           // AJAX request to backend
           $.ajax({
             type: "POST",
-            url: "http://localhost:3000/generate-images", // Your API endpoint
+            url: "https://future4u.replit.app/generate-images", // Your API endpoint
             data: $(this).serialize(), // Form data
+            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
             success: function (response) {
               // Hide the loading skeleton
               $("#loadingSkeleton").hide();
 
-              // Show the generated image
-              $("#generatedImage").attr("src", response.imageData[0]).show();
-            },
-            error: function (error) {
-              // Hide the loading skeleton
-              $("#loadingSkeleton").hide();
-              alert("An error occurred. Please try again.");
+              // Log the response to the console for debugging
+              console.log("Response received:", response);
+
+              // Check if the response has imageData and it's not just a single character 'd'
+              if (response.imageData && response.imageData.length > 1) {
+                // Show the generated image
+                $("#generatedImage").attr("src", response.imageData).show();
+              } else {
+                // Log an error or handle the case where imageData is not as expected
+                console.error(
+                  "Invalid image data received",
+                  response.imageData
+                );
+              }
             },
           });
         });
       });
+      const handleDownload = () => {
+        const generatedImage = document.getElementById("generatedImage");
+        if (generatedImage.src) {
+          const link = document.createElement("a");
+          link.href = generatedImage.src;
+          link.download = "downloadedImage.png"; // or any other filename you wish
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          alert("No image available for download.");
+        }
+      };
     </script>
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>

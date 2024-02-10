@@ -9,7 +9,8 @@ import cors from "cors";
 import stream from "stream";
 import path from "path";
 import bodyParser from "body-parser";
-
+import sharp from "sharp";
+import axios from "axios";
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -46,25 +47,8 @@ const jwtClient = new google.auth.JWT(
 // Initialize the Google Drive API client
 const drive = google.drive({ version: "v3", auth: jwtClient });
 
-const getFileContent = async (drive, fileId) => {
-  const response = await drive.files.get(
-    {
-      fileId: fileId,
-      alt: "media",
-    },
-    {
-      responseType: "stream",
-    }
-  );
 
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    response.data
-      .on("data", (chunk) => chunks.push(chunk))
-      .on("end", () => resolve(Buffer.concat(chunks).toString("utf-8")))
-      .on("error", reject);
-  });
-};
+const csvFilePath = path.join(__dirname, "FutureSelfie-New-Data.csv"); // Define the path for the CSV file
 
 const savetocsv = async (
   firstName,
@@ -75,51 +59,93 @@ const savetocsv = async (
   additionalCharacters,
   additionalInfo,
   imageCopy,
-  imageUrl
+  imageUrl,
+  Organization
 ) => {
   // Define the header and data format.
-  const headers =
-    "First Name,Email,Main Scene,Location,Main Character,Additional Characters,Additional Info,Image Copy,Image Link\n";
-  const data = `${firstName},${email},${mainScene},${location},${mainCharacter},${additionalCharacters},${additionalInfo},${imageCopy},${imageUrl}\n`;
+  const headers = "First Name,Email,Main Scene,Location,Main Character,Additional Characters,Additional Info,Image Copy,Image Link,Organization\n";
+  const data = `${firstName},${email},${mainScene},${location},${mainCharacter},${additionalCharacters},${additionalInfo},${imageCopy},${imageUrl},${Organization}\n`;
 
-  const fileId = "1mwBP2NcooQzRElg66sNDMQpy1y1golVg"; // The ID of your userDetails.csv file
-
-  // Get the existing content of the file from Google Drive
-  let existingContent = "";
-  try {
-    existingContent = await getFileContent(drive, fileId);
-  } catch (error) {
-    console.error("Error downloading the file:", error);
-    return;
-  }
-
-  // Determine whether we need to add headers
-  const finalData = existingContent.includes("First Name")
-    ? existingContent + data
-    : headers + existingContent + data;
-
-  // Convert the final data to a stream
-  const bufferStream = new stream.PassThrough();
-  bufferStream.end(Buffer.from(finalData, "utf-8"));
-
-  // Update the file on Google Drive
-  try {
-    await drive.files.update({
-      fileId: fileId,
-      media: {
-        mimeType: "text/csv",
-        body: bufferStream,
-      },
+  // Check if the CSV file exists and append data or create a new file with headers and data
+  fs.promises
+    .access(csvFilePath, fs.constants.F_OK)
+    .then(() => {
+      console.log("CSV file exists. Appending data.");
+      return fs.promises.appendFile(csvFilePath, data);
+    })
+    .then(() => {
+      console.log("Data appended to CSV file successfully.");
+      // After saving the CSV locally, call the function to upload the file to Google Drive
+      uploadCSVToDrive(csvFilePath);
+    })
+    .catch((error) => {
+      console.log("CSV file does not exist or another error occurred. Attempting to create file.", error);
+      return fs.promises.writeFile(csvFilePath, headers + data);
+    })
+    .then(() => {
+      console.log("CSV file created with headers and data.");
+      // After saving the CSV locally, call the function to upload the file to Google Drive
+      uploadCSVToDrive(csvFilePath);
+    })
+    .catch((error) => {
+      console.error("Error writing to CSV file:", error);
     });
-    console.log("CSV file updated in Google Drive");
+};
+
+const uploadCSVToDrive = async (csvFilePath) => {
+  const folderId = process.env.GOOGLE_FOLDER_ID; // Ensure this is correctly set in your .env file
+  console.log("Uploading CSV to Google Drive. Folder ID:", folderId);
+  try {
+    const fileMetadata = {
+      name: "FutureSelfie-New-Data.csv",
+      parents: [folderId],
+    };
+    const media = {
+      mimeType: "text/csv",
+      body: fs.createReadStream(csvFilePath),
+    };
+
+    const response = await drive.files.create({
+      resource: fileMetadata,
+      media: media,
+      fields: "id",
+    });
+    console.log("File uploaded to Google Drive with ID:", response.data.id);
   } catch (error) {
-    console.error("Error updating the file:", error);
+    console.error("Error uploading file to Google Drive:", error);
   }
 };
 
+
+
+const addTextToImage = async (imageBuffer, text) => {
+  // Define the text attributes
+  const svgText = `
+    <svg width="1024" height="1024">
+      <style>
+        .title { fill: #fff; font-size: 24px; font-family: Arial, sans-serif; }
+      </style>
+      <text x="10" y="1014" class="title">${text}</text>
+    </svg>
+  `;
+
+  // Overlay the text onto the image using sharp
+  return sharp(imageBuffer)
+    .composite([
+      {
+        input: Buffer.from(svgText),
+        top: 0,
+        left: 0,
+        gravity: "southeast", // Position the text at the bottom right
+      },
+    ])
+    .toBuffer();
+};
+
 app.post("/generate-images", upload.none(), async (req, res) => {
+  console.log("data recieved:",req.body)
   try {
-    console.log("Received data:", req.body);
+    
 
     const {
       firstName,
@@ -144,6 +170,30 @@ app.post("/generate-images", upload.none(), async (req, res) => {
     console.log("Generated image data:", imageResponse.data);
     const imageUrl = imageResponse.data[0].url;
 
+    // Download the generated image
+    const response = await axios({
+      method: "GET",
+      url: imageUrl,
+      responseType: "arraybuffer",
+    });
+
+    const generatedImageBuffer = Buffer.from(response.data);
+
+    // Add text to the image
+    const finalImageBuffer = await addTextToImage(
+      generatedImageBuffer,
+      "futureselfie.ai"
+    );
+
+    // Convert your buffer into a base64 string to send in a JSON response
+    const imageBase64 = finalImageBuffer.toString("base64");
+
+    
+    console.log("Data Saved to CSV in Google Drive");
+    res.json({
+      message: "Image generated successfully",
+      imageData: `data:image/png;base64,${imageBase64}`,
+    });
     await savetocsv(
       firstName,
       email,
@@ -155,11 +205,6 @@ app.post("/generate-images", upload.none(), async (req, res) => {
       imageCopy,
       imageUrl
     );
-    console.log("Data Saved to CSV in Google Drive");
-    res.json({
-      message: "Image generated successfully",
-      imageData: [imageUrl],
-    });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ message: "Error generating image" });
