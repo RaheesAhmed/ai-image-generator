@@ -1,87 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login and Google Drive Upload</title>
-    <link rel="stylesheet" href="style.css"> <!-- Link to CSS for styling -->
-</head>
-<style>
-body, html {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
-
-.login-container, .upload-container {
-    position: fixed;
-    width: 300px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-input[type="text"], input[type="password"], input[type="file"] {
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    display: inline-block;
-    box-sizing: border-box;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    opacity: 0.8;
-}
-
-
-</style>
-<body>
-    <div class="login-container">
-        <form id="loginForm">
-            <h2>Login</h2>
-            <input type="text" placeholder="Username" name="username" required>
-            <input type="password" placeholder="Password" name="password" required>
-            <button type="submit">Login</button>
-        </form>
-    </div>
-
-    <div class="upload-container" style="display:none;">
-        <h2>Upload to Google Drive</h2>
-        <input type="file" id="fileInput">
-        <button onclick="uploadToDrive()">Upload</button>
-    </div>
-
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    // Simulate login - Replace with actual login logic
-    var username = document.getElementsByName('username')[0].value;
-    var password = document.getElementsByName('password')[0].value;
-    if (username === "user" && password === "pass") { // Dummy check
-        document.querySelector('.login-container').style.display = 'none';
-        document.querySelector('.upload-container').style.display = 'block';
-    } else {
-        alert("Invalid credentials");
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Future Selfie™ - AI Image Generator</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Montserrat&display=swap" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" />
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <style>
+    /* Your existing CSS styles */
+    /* Adjusted for demonstration */
+    .form-control:focus {
+      border-color: #6c757d;
+      box-shadow: none;
     }
-});
 
-//make api call to a new end point to save the csv to the google drive
+    .btn-custom {
+      background-color: #8e44ad; /* Custom color for the button */
+      color: white;
+    }
 
+    .btn-custom:hover {
+      background-color: #732d91; /* Darker shade for hover state */
+    }
 
-    </script> 
+    #loadingSkeleton {
+      display: none; /* Hidden by default */
+    }
+
+    #generatedImage {
+      display: none; /* Hidden by default */
+      max-width: 100%; /* Ensure it fits in its container */
+    }
+  </style>
+</head>
+<body>
+  <header class="container-fluid">
+    <!-- Header Content -->
+  </header>
+  
+  <!-- Form Section -->
+  <section class="mt-4" style="background: #f6f6f6">
+    <form id="imageGenerationForm">
+      <!-- Form Inputs -->
+      <button type="submit" class="btn btn-custom mt-4">Create Your Image</button>
+    </form>
+    <div id="loadingSkeleton">Generating your image, please wait...</div>
+    <img id="generatedImage" src="" alt="Generated Image" />
+  </section>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#imageGenerationForm").on("submit", function (e) {
+        e.preventDefault();
+        $("#loadingSkeleton").show(); // Show the loading message
+        $("#generatedImage").hide(); // Ensure the image is hidden while loading
+
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/generate-images",
+          data: $(this).serialize(),
+          success: function (response) {
+            $("#loadingSkeleton").hide(); // Hide the loading message
+            if (response.imageData) {
+              $("#generatedImage").attr("src", response.imageData).show(); // Show the generated image
+            } else {
+              console.error("No image data received.");
+            }
+          },
+          error: function () {
+            $("#loadingSkeleton").hide(); // Hide the loading message on error
+            alert("Failed to generate the image. Please try again.");
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>

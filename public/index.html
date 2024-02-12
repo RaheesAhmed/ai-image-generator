@@ -292,7 +292,7 @@
             >5. Would you like to receive a copy of your FutureSelf™ along with
             tips on how to turn your vision into reality?</label
           >
-          <input type="checkbox" class="w-8 h-8" id="newsletterSignup" /> Yes
+          <input type="checkbox" class="w-8 h-8" id="imageCopy" name="imageCopy" /> Yes
         </div>
 
         <div class="form-group">
@@ -315,6 +315,7 @@
               placeholder="First Name"
               name="firstName"
               required
+              id="firstName"
             />
           </div>
           <div class="col">
@@ -325,6 +326,7 @@
               class=""
               placeholder="Email"
               name="email"
+              id="email"
               required
             />
           </div>
@@ -336,6 +338,7 @@
             class="form-control"
             placeholder="Organization"
             name="Organization"
+            id="Organization"
           />
         </div>
 
@@ -479,29 +482,17 @@
           // AJAX request to backend
           $.ajax({
             type: "POST",
-            url: "http://localhost:3000/generate-images", // Your API endpoint
+            url: "https://futureselfie.replit.app/generate-images", // Your API endpoint
             data: $(this).serialize(), // Form data
             contentType: "application/x-www-form-urlencoded; charset=UTF-8",
             success: function (response) {
-              // Hide the loading skeleton
-              $("#loadingSkeleton").hide();
-
-              // Log the response to the console for debugging
-              console.log("Response received:", response);
-
-              // Check if the response has imageData and it's not just a single character 'd'
-              if (response.imageData && response.imageData.length > 1) {
-                // Show the generated image
-                $("#generatedImage").attr("src", response.imageData).show();
-                console.log("Generated image URL:", response.imageData);
-              } else {
-                // Log an error or handle the case where imageData is not as expected
-                console.error(
-                  "Invalid image data received",
-                  response.imageData
-                );
-              }
-            },
+            $("#loadingSkeleton").hide(); // Hide the loading message
+            if (response.imageData) {
+              $("#generatedImage").attr("src", response.imageData).show(); // Show the generated image
+            } else {
+              console.error("No image data received.");
+            }
+          },
           });
         });
       });

@@ -1,6 +1,8 @@
 /node_modules
+.env
 test.html
 v2.html
 future4u-412121-9c3a9372690b.json
 credentials.json
-.env
+
+app.js
